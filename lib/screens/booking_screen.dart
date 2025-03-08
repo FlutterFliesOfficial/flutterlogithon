@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:delivery_tracking/service/supabase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:open_filex/open_filex.dart';
@@ -179,7 +180,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                     ..._documents.entries
                         .where((entry) => entry.value)
-                        .map((entry) => pw.Text('• ${entry.key}')),
+                        .map((entry) => pw.Text('# ${entry.key}')),
                   ],
                 ),
               ),
@@ -431,18 +432,68 @@ class _BookingPageState extends State<BookingPage> {
                   children: [
                     Expanded(
                       child: FilledButton.icon(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            generateAndSavePdf();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Booking submitted successfully!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          }
-                        },
+                        // onPressed: () {
+                        //   if (_formKey.currentState?.validate() ?? false) {
+                        //     generateAndSavePdf();
+                        //     // here add the submit function of supabase
+                        //     // Example usage
+                        //     String newOrderId = await SupabaseService.createOrder('pending');
+                        //     // Example usage
+                        //     await SupabaseService.createOrderTracking(
+                        //       orderId: 'your-order-id',
+                        //       status: 'in_transit',
+                        //       trackingDetails: 'Package is on the way',
+                        //       location: 'Mumbai, Maharashtra',
+                        //       route: 'MUM-DEL-001'
+                        //     );
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       const SnackBar(
+                        //         content:
+                        //             Text('Booking submitted successfully!'),
+                        //         backgroundColor: Colors.green,
+                        //       ),
+                        //     );
+                        //   }
+                        // },
+                        onPressed: () async {  // Add async keyword
+  if (_formKey.currentState?.validate() ?? false) {
+    try {
+      // First create the order and get the ID
+      int newOrderId = await SupabaseService.createOrder('Pending');
+      
+      // Then create the tracking entry using the new order ID
+      await SupabaseService.createOrderTracking(
+        orderId: newOrderId,
+        status: 'Transit',
+        trackingDetails: 'Shipment booked from ${widget.startPort} to ${widget.endPort}',
+        location: widget.startPort,
+        // route: widget.routeDetails["Path"] as String,
+        // Convert the Path array to a string by joining its elements
+route: (widget.routeDetails["Path"] as List).join(', '),
+        // route: '${widget.startPort}-${widget.endPort}',
+      );
+
+      // Generate PDF after successful database operations
+      await generateAndSavePdf();
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Booking submitted successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error submitting booking: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+},
                         icon: const Icon(Icons.check_circle_outline),
                         label: const Text(
                           'Confirm & Generate Invoice',

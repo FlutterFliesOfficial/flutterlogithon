@@ -64,7 +64,7 @@ class OrderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(customer, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Text('Customer',
+                  const Text('Agent',
                       style: TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
