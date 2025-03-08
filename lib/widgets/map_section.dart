@@ -1,10 +1,10 @@
-import 'package:delivery_tracking/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:delivery_tracking/widgets/driver_info_card.dart';
 
 class MapSection extends StatefulWidget {
-  const MapSection({super.key});
+  final List<LatLng> routeCoordinates; // Route from selected order
+
+  const MapSection({super.key, required this.routeCoordinates});
 
   @override
   State<MapSection> createState() => _MapSectionState();
@@ -12,9 +12,8 @@ class MapSection extends StatefulWidget {
 
 class _MapSectionState extends State<MapSection> {
   late GoogleMapController mapController;
-  final LatLng _center =
-      const LatLng(40.7128, -74.0060); // Using NYC coordinates from constants
 
+  // Update map controller
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
@@ -27,18 +26,32 @@ class _MapSectionState extends State<MapSection> {
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: ApiConstants.defaultMapZoom,
+              target: widget.routeCoordinates.first, // Center on first point
+              zoom: 5,
             ),
+            polylines: {
+              Polyline(
+                polylineId: const PolylineId("route"),
+                color: Colors.blue,
+                width: 5,
+                points: widget.routeCoordinates, // Dynamic route
+                startCap: Cap.roundCap,
+                endCap: Cap.roundCap,
+                jointType: JointType.round,
+              ),
+            },
+            markers: widget.routeCoordinates.map((LatLng point) {
+              return Marker(
+                markerId: MarkerId(point.toString()),
+                position: point,
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed),
+              );
+            }).toSet(),
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             zoomControlsEnabled: true,
             mapToolbarEnabled: true,
-          ),
-          const Positioned(
-            top: 16,
-            right: 16,
-            child: DriverInfoCard(),
           ),
         ],
       ),

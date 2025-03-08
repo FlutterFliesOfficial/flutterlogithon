@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:delivery_tracking/widgets/menu_item.dart';
-import 'package:delivery_tracking/screens/dashboard_screen.dart';
-
+//import "main.dart";
 
 class LeftSidebar extends StatelessWidget {
   const LeftSidebar({super.key});
@@ -28,14 +27,17 @@ class LeftSidebar extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.pink[100],
-                      child: const Text('R', style: TextStyle(color: Colors.pink)),
+                      child:
+                          const Text('R', style: TextStyle(color: Colors.pink)),
                     ),
                     const SizedBox(width: 12),
                     const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Manthan', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('manthan@gmail.com', style: TextStyle(color: Colors.grey)),
+                        Text('Manthan',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('manthan@gmail.com',
+                            style: TextStyle(color: Colors.grey)),
                       ],
                     ),
                   ],
@@ -58,35 +60,36 @@ class LeftSidebar extends StatelessWidget {
                 ),
               ),
               // Navigation Menu
-              const SizedBox(height: 1),
+              const SizedBox(height: 10),
+
+              // Dashboard
               MenuItem(
                 icon: Icons.dashboard_outlined,
                 title: 'Dashboard',
+                isSelected: ModalRoute.of(context)?.settings.name == '/',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DashboardScreen()),
-                  );
+                  Navigator.pushNamed(context, '/');
                 },
               ),
-              const MenuItem(icon: Icons.location_on_outlined, title: 'Tracking', isSelected: true),
-              const MenuItem(icon: Icons.inbox_outlined, title: 'Inbox', badge: '3'),
-              const MenuItem(icon: Icons.shopping_cart_outlined, title: 'Orders'),
+
+              // Tracking
+              MenuItem(
+                icon: Icons.location_on_outlined,
+                title: 'Tracking',
+                isSelected:
+                    ModalRoute.of(context)?.settings.name == '/tracking',
+                onTap: () {
+                  Navigator.pushNamed(context, '/tracking');
+                },
+              ),
+
+              const MenuItem(
+                  icon: Icons.inbox_outlined, title: 'Inbox', badge: '3'),
+              const MenuItem(
+                  icon: Icons.shopping_cart_outlined, title: 'Orders'),
               const MenuItem(icon: Icons.people_outline, title: 'Customers'),
               const MenuItem(icon: Icons.help_outline, title: 'Help & Support'),
               const MenuItem(icon: Icons.settings_outlined, title: 'Settings'),
-
-              // PDF Maker Button with Navigation
-              // MenuItem(
-              //   icon: Icons.picture_as_pdf_outlined,
-              //   title: 'PDF Maker',
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => const PdfMakerScreen()),
-              //     );
-              //   },
-              // ),
             ],
           ),
         ),

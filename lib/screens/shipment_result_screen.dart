@@ -62,7 +62,7 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.76.163:5000/get_route"),
+        Uri.parse("http://192.168.104.249:5000/get_route"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "start_port": widget.shipment.origin,
@@ -111,8 +111,41 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
     });
   }
 
-  String _formatPath(List<dynamic> pathData) {
-    return pathData.map((e) => e is String ? e : e["name"]).join(" → ");
+  // String _formatPath(List<dynamic> pathData, List<dynamic> transportModes) {
+  //   return pathData.map((e) => e is String ? e : e["name"]).join(" → ");
+  // }
+  String _formatPath(List<dynamic> pathData, List<dynamic> transportModes) {
+    List<String> formattedPath = [];
+    int modeIndex = 0;
+
+    for (int i = 0; i < pathData.length; i++) {
+      String node = pathData[i].toString();
+
+      // Skip "CONNECTED_TO" nodes
+      if (node == "CONNECTED_TO") continue;
+
+      formattedPath.add(node);
+
+      // Add transport mode emoji if there's a next location
+      if (i < pathData.length - 1 && modeIndex < transportModes.length) {
+        String mode = transportModes[modeIndex].toString().toLowerCase();
+        String icon = ""; //= mode == "air"  ? "✈️"
+        //     : mode == "water"
+        //         ? "🚢"
+        //         : "🚗";
+        if (mode == 'air') {
+          icon = "->✈️->";
+        } else if (mode == 'sea') {
+          icon = "->🚢->";
+        } else if (mode == 'road') {
+          icon = "->🚗->";
+        }
+        formattedPath.add(icon);
+        modeIndex++;
+      }
+    }
+
+    return formattedPath.join(" ");
   }
 
   @override
@@ -227,8 +260,8 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
                                   ),
                                   const SizedBox(height: 16),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    // mainAxisAlignment:
+                                    //     MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Expanded(
                                         child: ElevatedButton.icon(
@@ -298,7 +331,7 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
                                     ),
                                     DetailItem(
                                       icon: Icons.fitness_center,
-                                      label: "Min Weight",
+                                      label: "Maximum Weight",
                                       value: "${route['minWeight']} kg",
                                     ),
                                     DetailItem(
@@ -309,7 +342,8 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
                                     DetailItem(
                                       icon: Icons.directions,
                                       label: "Path",
-                                      value: _formatPath(route["Path"]),
+                                      value: _formatPath(route["Path"],
+                                          route["transport_modes"]),
                                     ),
                                   ],
                                 ],
