@@ -37,13 +37,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
       final shipment = Shipment(
         origin: _originController.text,
         destination: _destinationController.text,
-        // weight: double.parse(_weightController.text),
-        // volume: double.parse(_volumeController.text),
-        // priority: _priority,
-        // preferredMode: _preferredMode,
       );
 
-      // Check cache before navigating
       final cachedResults = _cache.getResults(
         _originController.text,
         _destinationController.text,
@@ -84,242 +79,244 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Route Information Card
-                LeftSidebar(),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
+      body: Row(
+        children: [
+          // Left Sidebar
+          LeftSidebar(),
+
+          // Main Content
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Route Information Card
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.route_outlined,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Route Information',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: Icon(
-                                Icons.route_outlined,
-                                color: Theme.of(context).primaryColor,
+                              const SizedBox(height: 24),
+                              TextFormField(
+                                controller: _originController,
+                                decoration: InputDecoration(
+                                  labelText: 'Origin Port',
+                                  hintText: 'Enter port name',
+                                  prefixIcon:
+                                      const Icon(Icons.location_on_outlined),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter origin port';
+                                  }
+                                  return null;
+                                },
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Route Information',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _destinationController,
+                                decoration: InputDecoration(
+                                  labelText: 'Destination Port',
+                                  hintText: 'Enter port name',
+                                  prefixIcon:
+                                      const Icon(Icons.location_on_outlined),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter destination port';
+                                  }
+                                  return null;
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        TextFormField(
-                          controller: _originController,
-                          decoration: InputDecoration(
-                            labelText: 'Origin Port',
-                            hintText: 'Enter port name',
-                            prefixIcon: const Icon(Icons.location_on_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            ],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter origin port';
-                            }
-                            return null;
-                          },
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _destinationController,
-                          decoration: InputDecoration(
-                            labelText: 'Destination Port',
-                            hintText: 'Enter port name',
-                            prefixIcon: const Icon(Icons.location_on_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Cargo Details Card
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF8B5CF6)
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.inventory_2_outlined,
+                                      color: Color(0xFF8B5CF6),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Cargo Details',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              TextFormField(
+                                controller: _weightController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: 'Weight (kg)',
+                                  prefixIcon: const Icon(Icons.scale_outlined),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter weight';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Please enter a valid number';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _volumeController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  labelText: 'Volume (m³)',
+                                  prefixIcon: Icon(Icons.category_outlined),
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter volume';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Please enter a valid number';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter destination port';
-                            }
-                            return null;
-                          },
                         ),
-                      ],
-                    ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Preferences Card
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF10B981)
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.tune_outlined,
+                                      color: Color(0xFF10B981),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Preferences',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              PrioritySelector(
+                                priority: _priority,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _priority = value;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              TransportModeSelector(
+                                selectedMode: _preferredMode,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _preferredMode = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      FilledButton.icon(
+                        onPressed: _handleSubmit,
+                        icon: const Icon(Icons.search),
+                        label: const Text('Find Routes'),
+                      ),
+                    ],
                   ),
                 ),
-
-                const SizedBox(height: 16),
-
-                // Cargo Details Card
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF8B5CF6).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.inventory_2_outlined,
-                                color: Color(0xFF8B5CF6),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Cargo Details',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        TextFormField(
-                          controller: _weightController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Weight (kg)',
-                            prefixIcon: const Icon(Icons.scale_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter weight';
-                            }
-                            if (double.tryParse(value) == null) {
-                              return 'Please enter a valid number';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _volumeController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Volume (m³)',
-                            prefixIcon: const Icon(Icons.category_outlined),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter volume';
-                            }
-                            if (double.tryParse(value) == null) {
-                              return 'Please enter a valid number';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Preferences Card
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF10B981).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.tune_outlined,
-                                color: Color(0xFF10B981),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Text(
-                              'Preferences',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        PrioritySelector(
-                          priority: _priority,
-                          onChanged: (value) {
-                            setState(() {
-                              _priority = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TransportModeSelector(
-                          selectedMode: _preferredMode,
-                          onChanged: (value) {
-                            setState(() {
-                              _preferredMode = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                FilledButton.icon(
-                  onPressed: _handleSubmit,
-                  icon: const Icon(Icons.search),
-                  label: const Text(
-                    'Find Routes',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
