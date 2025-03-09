@@ -53,4 +53,34 @@ class SupabaseService {
 
     return List<Map<String, dynamic>>.from(response);
   }
+
+  static Future<int> createOrder(String status) async {
+    final response = await client
+        .from('orders')
+        .insert({
+          'customer_id':
+              '0fc4d7e3-a280-4aa2-a4b4-b0f6344a6a64', // Replace with your constant customer_id
+          'status': status,
+        })
+        .select()
+        .single();
+
+    return response['id'] as int;
+  }
+
+  static Future<void> createOrderTracking({
+    required int orderId,
+    required String status,
+    required String trackingDetails,
+    required String location,
+    required List route,
+  }) async {
+    await client.from('order_tracking').insert({
+      'order_id': orderId,
+      'status': status,
+      'tracking_details': trackingDetails,
+      'location': location,
+      'route': route,
+    });
+  }
 }

@@ -62,7 +62,8 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://192.168.104.249:5000/get_route"),
+        Uri.parse(
+            "http://192.168.76.163:5000/get_route"), //http://192.168.104.249:5000/get_route
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "start_port": widget.shipment.origin,

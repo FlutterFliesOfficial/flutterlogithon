@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 Color getStatusColor(String status) {
   switch (status.toLowerCase()) {
-    case 'delivery':
+    case 'Delivered':
       return Colors.green[50]!;
-    case 'transit':
+    case 'Transit':
       return Colors.purple[50]!;
-    case 'pending':
+    case 'Pending':
       return Colors.orange[50]!;
     default:
       return Colors.grey[50]!;

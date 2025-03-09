@@ -223,6 +223,25 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                   return null;
                                 },
                               ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: _volumeController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  labelText: 'Volume (m³)',
+                                  prefixIcon: Icon(Icons.category_outlined),
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter volume';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Please enter a valid number';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -267,6 +286,15 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                 onChanged: (value) {
                                   setState(() {
                                     _priority = value;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              TransportModeSelector(
+                                selectedMode: _preferredMode,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _preferredMode = value;
                                   });
                                 },
                               ),
