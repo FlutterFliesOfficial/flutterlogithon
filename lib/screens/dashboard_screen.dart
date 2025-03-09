@@ -390,9 +390,17 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value, String subtitle, Color color, bool isPrimary, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(24),
+Widget _buildStatCard(
+  String title,
+  String value,
+  String subtitle,
+  Color color,
+  bool isPrimary,
+  IconData icon,
+) {
+  return Flexible(  // Ensures it doesn't cause overflow
+    child: Container(
+      padding: const EdgeInsets.all(20), // Reduced padding to avoid overflow
       decoration: BoxDecoration(
         color: isPrimary ? color : Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -404,16 +412,20 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min, // Prevents taking too much space
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: isPrimary ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.w500,
+              Expanded( // Ensures text doesn't overflow
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: isPrimary ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis, // Prevents long text issues
                 ),
               ),
               Icon(
@@ -427,7 +439,7 @@ class DashboardScreen extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28, // Slightly reduced font size
               fontWeight: FontWeight.bold,
               color: isPrimary ? Colors.white : Colors.black,
             ),
@@ -441,19 +453,89 @@ class DashboardScreen extends StatelessWidget {
                 color: isPrimary ? Colors.white70 : Colors.green,
               ),
               const SizedBox(width: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isPrimary ? Colors.white70 : Colors.grey[600],
+              Expanded(
+                child: Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isPrimary ? Colors.white70 : Colors.grey[600],
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
+  // Widget _buildStatCard(String title, String value, String subtitle, Color color, bool isPrimary, IconData icon) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(40),
+  //     decoration: BoxDecoration(
+  //       color: isPrimary ? color : Colors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.05),
+  //           blurRadius: 10,
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               title,
+  //               style: TextStyle(
+  //                 color: isPrimary ? Colors.white : Colors.black,
+  //                 fontWeight: FontWeight.w500,
+  //               ),
+  //             ),
+  //             Icon(
+  //               icon,
+  //               color: isPrimary ? Colors.white : color,
+  //               size: 24,
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 16),
+  //         Text(
+  //           value,
+  //           style: TextStyle(
+  //             fontSize: 32,
+  //             fontWeight: FontWeight.bold,
+  //             color: isPrimary ? Colors.white : Colors.black,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 4),
+  //         Row(
+  //           children: [
+  //             Icon(
+  //               Icons.arrow_upward,
+  //               size: 16,
+  //               color: isPrimary ? Colors.white70 : Colors.green,
+  //             ),
+  //             const SizedBox(width: 4),
+  //             Text(
+  //               subtitle,
+  //               style: TextStyle(
+  //                 fontSize: 12,
+  //                 color: isPrimary ? Colors.white70 : Colors.grey[600],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildAnalyticsBar({required double height, required bool isActive}) {
     return Container(
