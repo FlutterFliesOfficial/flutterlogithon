@@ -1,5 +1,3 @@
-// lib/screens/dashboard_screen.dart
-
 import 'package:delivery_tracking/widgets/left_sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery_tracking/screens/shipment_form_screen.dart';
@@ -10,101 +8,201 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       body: Row(
         children: [
-          LeftSidebar(),
+          const LeftSidebar(),
           Expanded(
             child: CustomScrollView(
               slivers: [
-                SliverAppBar.large(
+                // App Bar
+                SliverAppBar(
                   floating: true,
-                  pinned: true,
-                  title: const Text('Delivery Dashboard'),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.notifications_outlined),
-                      onPressed: () {},
-                    ),
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80',
+                  backgroundColor: Colors.grey[50],
+                  elevation: 0,
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Delivery Dashboard',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              'Track and manage your shipments efficiently',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                  ],
+                      ElevatedButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ShipmentFormScreen(),
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[700],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add, size: 20),
+                            SizedBox(width: 8),
+                            Text('New Shipment'),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      OutlinedButton(
+                        onPressed: () {},
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
+                        child: const Text('Import Data'),
+                      ),
+                    ],
+                  ),
                 ),
+
+                // Main Content
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Stats Grid
-                        GridView.count(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 1.5,
+                        // Stats Cards
+                        Row(
                           children: [
                             _buildStatCard(
-                              context,
                               'Active Shipments',
                               '12',
+                              'Increased by 25%',
+                              Colors.green[700]!,
+                              true,
                               Icons.local_shipping_outlined,
-                              const Color(0xFF6366F1),
                             ),
+                            const SizedBox(width: 16),
                             _buildStatCard(
-                              context,
                               'In Transit',
                               '8',
+                              'On schedule',
+                              Colors.blue,
+                              false,
                               Icons.timeline_outlined,
-                              const Color(0xFF8B5CF6),
                             ),
+                            const SizedBox(width: 16),
                             _buildStatCard(
-                              context,
                               'Delivered',
                               '5',
+                              'Last 24 hours',
+                              Colors.orange,
+                              false,
                               Icons.done_all_outlined,
-                              const Color(0xFF10B981),
                             ),
+                            const SizedBox(width: 16),
                             _buildStatCard(
-                              context,
                               'Delayed',
                               '2',
+                              'Needs attention',
+                              Colors.red,
+                              false,
                               Icons.warning_outlined,
-                              const Color(0xFFEF4444),
                             ),
-                          ],
+                          ].map((widget) => Expanded(child: widget)).toList(),
                         ),
 
                         const SizedBox(height: 24),
 
-                        // Quick Actions
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                        // Shipment Analytics and Quick Actions Row
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Shipment Analytics
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.bolt,
-                                        color: Theme.of(context).primaryColor,
+                                    const Text(
+                                      'Shipment Analytics',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: List.generate(
+                                        7,
+                                        (index) => _buildAnalyticsBar(
+                                          height: [60.0, 80.0, 70.0, 100.0, 60.0, 40.0, 50.0][index],
+                                          isActive: index == 3,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                                          .map((day) => Text(
+                                                day,
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 12,
+                                                ),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            // Quick Actions
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     const Text(
                                       'Quick Actions',
                                       style: TextStyle(
@@ -112,109 +210,173 @@ class DashboardScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    _buildActionButton(
+                                    const SizedBox(height: 16),
+                                    _buildQuickActionButton(
                                       context,
-                                      'New Shipment',
-                                      Icons.add_box_outlined,
-                                      () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ShipmentFormScreen(),
-                                        ),
-                                      ),
-                                    ),
-                                    _buildActionButton(
-                                      context,
-                                      'Track',
+                                      'Track Shipment',
                                       Icons.search_outlined,
                                       () {},
                                     ),
-                                    _buildActionButton(
+                                    const SizedBox(height: 12),
+                                    _buildQuickActionButton(
                                       context,
-                                      'Reports',
+                                      'Generate Report',
                                       Icons.bar_chart_outlined,
+                                      () {},
+                                    ),
+                                    const SizedBox(height: 12),
+                                    _buildQuickActionButton(
+                                      context,
+                                      'Schedule Pickup',
+                                      Icons.calendar_today_outlined,
                                       () {},
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
 
                         const SizedBox(height: 24),
 
-                        // Recent Shipments
-                        Card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF8B5CF6)
-                                            .withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Icon(
-                                        Icons.local_shipping_outlined,
-                                        color: Color(0xFF8B5CF6),
-                                      ),
+                        // Recent Shipments and Progress Row
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Recent Shipments
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
                                     ),
-                                    const SizedBox(width: 12),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Recent Shipments',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {},
+                                          child: const Text('View All'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildShipmentItem(
+                                      'SH001',
+                                      'New York Port',
+                                      'Shanghai Port',
+                                      'In Transit',
+                                      Colors.blue,
+                                    ),
+                                    const Divider(height: 24),
+                                    _buildShipmentItem(
+                                      'SH002',
+                                      'Los Angeles Port',
+                                      'Singapore Port',
+                                      'Delayed',
+                                      Colors.red,
+                                    ),
+                                    const Divider(height: 24),
+                                    _buildShipmentItem(
+                                      'SH003',
+                                      'Miami Port',
+                                      'Rotterdam Port',
+                                      'On Schedule',
+                                      Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            // Delivery Progress
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     const Text(
-                                      'Recent Shipments',
+                                      'Delivery Progress',
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const Spacer(),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: const Text('View All'),
+                                    const SizedBox(height: 24),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: 150,
+                                          width: 150,
+                                          child: CircularProgressIndicator(
+                                            value: 0.65,
+                                            backgroundColor: Colors.grey[200],
+                                            color: Colors.green[700],
+                                            strokeWidth: 12,
+                                          ),
+                                        ),
+                                        const Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              '65%',
+                                              style: TextStyle(
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'On Time Delivery',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
+                                    const SizedBox(height: 24),
+                                    _buildProgressLegend('On Schedule', Colors.green),
+                                    const SizedBox(height: 8),
+                                    _buildProgressLegend('In Transit', Colors.blue),
+                                    const SizedBox(height: 8),
+                                    _buildProgressLegend('Delayed', Colors.red),
                                   ],
                                 ),
                               ),
-                              const Divider(height: 1),
-                              _buildShipmentItem(
-                                'SH001',
-                                'New York Port',
-                                'Shanghai Port',
-                                'In Transit',
-                                const Color(0xFF6366F1),
-                              ),
-                              const Divider(height: 1),
-                              _buildShipmentItem(
-                                'SH002',
-                                'Los Angeles Port',
-                                'Singapore Port',
-                                'Delayed',
-                                const Color(0xFFEF4444),
-                              ),
-                              const Divider(height: 1),
-                              _buildShipmentItem(
-                                'SH003',
-                                'Miami Port',
-                                'Rotterdam Port',
-                                'On Schedule',
-                                const Color(0xFF10B981),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -228,122 +390,174 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, String title, String value,
-      IconData icon, Color color) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildStatCard(String title, String value, String subtitle, Color color, bool isPrimary, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: isPrimary ? color : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildActionButton(BuildContext context, String label, IconData icon,
-      VoidCallback onPressed) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: Theme.of(context).primaryColor,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShipmentItem(String id, String origin, String destination,
-      String status, Color statusColor) {
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Shipment $id',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$origin → $destination',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                status,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
                 style: TextStyle(
-                  color: statusColor,
+                  color: isPrimary ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              Icon(
+                icon,
+                color: isPrimary ? Colors.white : color,
+                size: 24,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: isPrimary ? Colors.white : Colors.black,
             ),
-          ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(
+                Icons.arrow_upward,
+                size: 16,
+                color: isPrimary ? Colors.white70 : Colors.green,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isPrimary ? Colors.white70 : Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsBar({required double height, required bool isActive}) {
+    return Container(
+      width: 30,
+      height: height,
+      decoration: BoxDecoration(
+        color: isActive ? Colors.green[700] : Colors.grey[200],
+        borderRadius: BorderRadius.circular(15),
+      ),
+    );
+  }
+
+  Widget _buildQuickActionButton(BuildContext context, String label, IconData icon, VoidCallback onPressed) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[100],
+          foregroundColor: Colors.black87,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          alignment: Alignment.centerLeft,
         ),
       ),
+    );
+  }
+
+  Widget _buildShipmentItem(String id, String origin, String destination, String status, Color statusColor) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            Icons.local_shipping_outlined,
+            color: statusColor,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Shipment $id',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '$origin → $destination',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            status,
+            style: TextStyle(
+              color: statusColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProgressLegend(String label, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+        ),
+      ],
     );
   }
 }
