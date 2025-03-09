@@ -1,3 +1,411 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_typeahead/flutter_typeahead.dart';
+// import 'package:delivery_tracking/widgets/left_sidebar.dart';
+// import 'package:delivery_tracking/screens/shipment_result_screen.dart';
+// import 'package:delivery_tracking/service/shipment_cache.dart';
+// import 'package:delivery_tracking/models/shipment.dart';
+// import 'package:delivery_tracking/widgets/priority_selector.dart';
+// import 'package:delivery_tracking/widgets/transport_selector.dart';
+
+// class ShipmentFormScreen extends StatefulWidget {
+//   const ShipmentFormScreen({super.key});
+
+//   @override
+//   State<ShipmentFormScreen> createState() => _ShipmentFormScreenState();
+// }
+
+// class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
+//   final _formKey = GlobalKey<FormState>();
+//   final _originController = TextEditingController();
+//   final _destinationController = TextEditingController();
+//   final _weightController = TextEditingController();
+//   final _volumeController = TextEditingController();
+//   ShipmentPriority _priority = ShipmentPriority.balanced;
+//   TransportMode? _preferredMode;
+//   final _cache = ShipmentCache();
+
+//   // Sample dropdown values for origin and destination ports
+//   final List<String> ports = [
+//     "Shanghai, China",
+//     "Ningbo, China",
+//     "Shenzhen, China",
+//     "Guangzhou, China",
+//     "Tianjin, China",
+//     "Xiamen, China",
+//     "Qingdao, China",
+//     "Busan, South Korea",
+//     "Singapore, Singapore",
+//     "Hong Kong, Hong Kong",
+//     "Rotterdam, Netherlands",
+//     "Antwerp, Belgium",
+//     "Hamburg, Germany",
+//     "Le Havre, France",
+//     "Barcelona, Spain",
+//     "Valencia, Spain",
+//     "Piraeus, Greece",
+//     "Gdansk, Poland",
+//     "Los Angeles, USA",
+//     "Long Beach, USA",
+//     "New York/Newark, USA",
+//     "Savannah, USA",
+//     "Manzanillo, Mexico",
+//     "Lazaro Cardenas, Mexico",
+//     "Callao, Peru",
+//     "Cartagena, Colombia",
+//     "Santos, Brazil",
+//     "Buenos Aires, Argentina",
+//     "Durban, South Africa",
+//     "Cape Town, South Africa",
+//     "Jebel Ali, UAE",
+//     "Port Klang, Malaysia",
+//     "Tanjung Pelepas, Malaysia",
+//     "Laem Chabang, Thailand",
+//     "Ho Chi Minh City (Saigon), Vietnam",
+//     "Jakarta (Tanjung Priok), Indonesia",
+//     "Colombo, Sri Lanka",
+//     "Chittagong (Chattogram), Bangladesh",
+//     "Karachi (Port Qasim), Pakistan",
+//     "Mumbai (Nhava Sheva), India",
+//     "Chennai (Madras), India",
+//     "Kolkata (Haldia), India",
+//     "Fujairah, UAE",
+//     "Dammam (King Abdulaziz Port), Saudi Arabia",
+//     "Jubail Industrial Port, Saudi Arabia",
+//     "Aqaba, Jordan",
+//     "Beirut, Lebanon",
+//     "Alexandria Port, Egypt",
+//     "Port Said (East Port), Egypt"
+//   ];
+
+//   @override
+//   void dispose() {
+//     _originController.dispose();
+//     _destinationController.dispose();
+//     _weightController.dispose();
+//     _volumeController.dispose();
+//     super.dispose();
+//   }
+
+//   void _handleSubmit() {
+//     if (_formKey.currentState!.validate()) {
+//       final shipment = Shipment(
+//         origin: _originController.text,
+//         destination: _destinationController.text,
+//       );
+
+//       final cachedResults = _cache.getResults(
+//         _originController.text,
+//         _destinationController.text,
+//         _priority.toString(),
+//       );
+
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => ShipmentResultsScreen(
+//             shipment: shipment,
+//             cachedResults: cachedResults,
+//           ),
+//         ),
+//       );
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.grey[50],
+//       body: Row(
+//         children: [
+//           const LeftSidebar(),
+//           Expanded(
+//             child: CustomScrollView(
+//               slivers: [
+//                 // Modern App Bar
+//                 SliverAppBar(
+//                   floating: true,
+//                   backgroundColor: Colors.grey[50],
+//                   elevation: 0,
+//                   title: Row(
+//                     children: [
+//                       Expanded(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             const Text(
+//                               'New Shipment',
+//                               style: TextStyle(
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                                 color: Colors.black,
+//                               ),
+//                             ),
+//                             Text(
+//                               'Create a new shipment request',
+//                               style: TextStyle(
+//                                 fontSize: 14,
+//                                 color: Colors.grey[600],
+//                                 fontWeight: FontWeight.normal,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                       IconButton(
+//                         icon: const Icon(Icons.delete_outline),
+//                         onPressed: () {
+//                           _cache.clearCache();
+//                           ScaffoldMessenger.of(context).showSnackBar(
+//                             const SnackBar(
+//                               content: Text('Cache cleared'),
+//                               duration: Duration(seconds: 2),
+//                             ),
+//                           );
+//                         },
+//                         tooltip: 'Clear Cache',
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+
+//                 // Main Content
+//                 SliverToBoxAdapter(
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(24.0),
+//                     child: Form(
+//                       key: _formKey,
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.stretch,
+//                         children: [
+//                           // Route Information Card
+//                           Container(
+//                             padding: const EdgeInsets.all(24),
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               borderRadius: BorderRadius.circular(16),
+//                               boxShadow: [
+//                                 BoxShadow(
+//                                   color: Colors.black.withOpacity(0.05),
+//                                   blurRadius: 10,
+//                                 ),
+//                               ],
+//                             ),
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Row(
+//                                   children: [
+//                                     Container(
+//                                       padding: const EdgeInsets.all(12),
+//                                       decoration: BoxDecoration(
+//                                         color:
+//                                             Colors.green[700]!.withOpacity(0.1),
+//                                         borderRadius: BorderRadius.circular(12),
+//                                       ),
+//                                       child: Icon(
+//                                         Icons.route_outlined,
+//                                         color: Colors.green[700],
+//                                       ),
+//                                     ),
+//                                     const SizedBox(width: 12),
+//                                     const Text(
+//                                       'Route Information',
+//                                       style: TextStyle(
+//                                         fontSize: 18,
+//                                         fontWeight: FontWeight.bold,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 const SizedBox(height: 24),
+
+//                                 // Origin Dropdown (Searchable)
+//                                 TypeAheadFormField<String>(
+//                                   textFieldConfiguration:
+//                                       TextFieldConfiguration(
+//                                     controller: _originController,
+//                                     decoration: InputDecoration(
+//                                       labelText: 'Origin Port',
+//                                       hintText: 'Search for a port',
+//                                       prefixIcon: const Icon(
+//                                           Icons.location_on_outlined),
+//                                       border: OutlineInputBorder(
+//                                         borderRadius: BorderRadius.circular(12),
+//                                       ),
+//                                       filled: true,
+//                                       fillColor: Colors.grey[100],
+//                                     ),
+//                                   ),
+//                                   suggestionsCallback: (pattern) {
+//                                     return ports.where((port) => port
+//                                         .toLowerCase()
+//                                         .contains(pattern.toLowerCase()));
+//                                   },
+//                                   itemBuilder: (context, String suggestion) {
+//                                     return ListTile(
+//                                       title: Text(suggestion),
+//                                     );
+//                                   },
+//                                   onSuggestionSelected: (String suggestion) {
+//                                     _originController.text = suggestion;
+//                                   },
+//                                   validator: (value) {
+//                                     if (value == null || value.isEmpty) {
+//                                       return 'Please enter origin port';
+//                                     }
+//                                     return null;
+//                                   },
+//                                 ),
+
+//                                 const SizedBox(height: 16),
+
+//                                 // Destination Dropdown (Searchable)
+//                                 TypeAheadFormField<String>(
+//                                   textFieldConfiguration:
+//                                       TextFieldConfiguration(
+//                                     controller: _destinationController,
+//                                     decoration: InputDecoration(
+//                                       labelText: 'Destination Port',
+//                                       hintText: 'Search for a port',
+//                                       prefixIcon: const Icon(
+//                                           Icons.location_on_outlined),
+//                                       border: OutlineInputBorder(
+//                                         borderRadius: BorderRadius.circular(12),
+//                                       ),
+//                                       filled: true,
+//                                       fillColor: Colors.grey[100],
+//                                     ),
+//                                   ),
+//                                   suggestionsCallback: (pattern) {
+//                                     return ports.where((port) => port
+//                                         .toLowerCase()
+//                                         .contains(pattern.toLowerCase()));
+//                                   },
+//                                   itemBuilder: (context, String suggestion) {
+//                                     return ListTile(
+//                                       title: Text(suggestion),
+//                                     );
+//                                   },
+//                                   onSuggestionSelected: (String suggestion) {
+//                                     _destinationController.text = suggestion;
+//                                   },
+//                                   validator: (value) {
+//                                     if (value == null || value.isEmpty) {
+//                                       return 'Please enter destination port';
+//                                     }
+//                                     return null;
+//                                   },
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+
+//                           const SizedBox(height: 24),
+
+//                           // Cargo Details Card
+//                           Container(
+//                             padding: const EdgeInsets.all(24),
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               borderRadius: BorderRadius.circular(16),
+//                               boxShadow: [
+//                                 BoxShadow(
+//                                   color: Colors.black.withOpacity(0.05),
+//                                   blurRadius: 10,
+//                                 ),
+//                               ],
+//                             ),
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 Row(
+//                                   children: [
+//                                     Container(
+//                                       padding: const EdgeInsets.all(12),
+//                                       decoration: BoxDecoration(
+//                                         color: Colors.blue.withOpacity(0.1),
+//                                         borderRadius: BorderRadius.circular(12),
+//                                       ),
+//                                       child: const Icon(
+//                                         Icons.inventory_2_outlined,
+//                                         color: Colors.blue,
+//                                       ),
+//                                     ),
+//                                     const SizedBox(width: 12),
+//                                     const Text(
+//                                       'Cargo Details',
+//                                       style: TextStyle(
+//                                         fontSize: 18,
+//                                         fontWeight: FontWeight.bold,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 const SizedBox(height: 24),
+//                                 TextFormField(
+//                                   controller: _weightController,
+//                                   keyboardType: TextInputType.number,
+//                                   decoration: InputDecoration(
+//                                     labelText: 'Weight (kg)',
+//                                     prefixIcon:
+//                                         const Icon(Icons.scale_outlined),
+//                                     border: OutlineInputBorder(
+//                                       borderRadius: BorderRadius.circular(12),
+//                                     ),
+//                                     filled: true,
+//                                     fillColor: Colors.grey[100],
+//                                   ),
+//                                   validator: (value) {
+//                                     if (value == null || value.isEmpty) {
+//                                       return 'Please enter weight';
+//                                     }
+//                                     if (double.tryParse(value) == null) {
+//                                       return 'Please enter a valid number';
+//                                     }
+//                                     return null;
+//                                   },
+//                                 ),
+//                                 const SizedBox(height: 16),
+//                                 TextFormField(
+//                                   controller: _volumeController,
+//                                   keyboardType: TextInputType.number,
+//                                   decoration: InputDecoration(
+//                                     labelText: 'Volume (m³)',
+//                                     prefixIcon:
+//                                         const Icon(Icons.category_outlined),
+//                                     border: OutlineInputBorder(
+//                                       borderRadius: BorderRadius.circular(12),
+//                                     ),
+//                                     filled: true,
+//                                     fillColor: Colors.grey[100],
+//                                   ),
+//                                   validator: (value) {
+//                                     if (value == null || value.isEmpty) {
+//                                       return 'Please enter volume';
+//                                     }
+//                                     if (double.tryParse(value) == null) {
+//                                       return 'Please enter a valid number';
+//                                     }
+//                                     return null;
+//                                   },
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 import 'package:delivery_tracking/screens/shipment_result_screen.dart';
 import 'package:delivery_tracking/service/shipment_cache.dart';
 import 'package:delivery_tracking/widgets/left_sidebar.dart';
@@ -144,7 +552,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: Colors.green[700]!.withOpacity(0.1),
+                                        color:
+                                            Colors.green[700]!.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Icon(
@@ -168,7 +577,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                   decoration: InputDecoration(
                                     labelText: 'Origin Port',
                                     hintText: 'Enter port name',
-                                    prefixIcon: const Icon(Icons.location_on_outlined),
+                                    prefixIcon:
+                                        const Icon(Icons.location_on_outlined),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -188,7 +598,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                   decoration: InputDecoration(
                                     labelText: 'Destination Port',
                                     hintText: 'Enter port name',
-                                    prefixIcon: const Icon(Icons.location_on_outlined),
+                                    prefixIcon:
+                                        const Icon(Icons.location_on_outlined),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -253,7 +664,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     labelText: 'Weight (kg)',
-                                    prefixIcon: const Icon(Icons.scale_outlined),
+                                    prefixIcon:
+                                        const Icon(Icons.scale_outlined),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -276,7 +688,8 @@ class _ShipmentFormScreenState extends State<ShipmentFormScreen> {
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     labelText: 'Volume (m³)',
-                                    prefixIcon: const Icon(Icons.category_outlined),
+                                    prefixIcon:
+                                        const Icon(Icons.category_outlined),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
