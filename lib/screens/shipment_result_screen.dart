@@ -89,7 +89,7 @@ class _ShipmentResultsScreenState extends State<ShipmentResultsScreen> {
       }
 
       final response = await http.post(
-        Uri.parse("http://192.168.10.37:5000/get_route"),
+        Uri.parse("http://140.245.30.83:5000/get_route"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestBody),
       );
